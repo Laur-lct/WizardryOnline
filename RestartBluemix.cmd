@@ -1,0 +1,2 @@
+cf restart WizOnline 
+pause

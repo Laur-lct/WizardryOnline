@@ -1,0 +1,31 @@
+How to start the server part from WebStorm.
+
+1. Install node.js on computer   http://nodejs.org/download/
+2. Configure WebStorm to use node JS   http://blog.jetbrains.com/webstorm/2014/01/getting-started-with-node-js-in-webstorm/
+3. Configure WebStorm to integrate with GitHub   http://www.jetbrains.com/webstorm/webhelp/registering-github-account-in-webstorm.html
+4. Open our project, set project configuration (Run -> Edit Configurations) start script is server\GameServer.js, working directory is full path to Just_like_wizardry
+5. go to tools > Open Terminal, type "npm install" If error occurs, create empty folder C:\Users\*Username*\AppData\Roaming\npm
+6. go to File->Settings->JavaScript->libraries , check the box with "Node.Js Globals"
+
+7. start server Run > Run or debug.
+8. open localhost:6001 in browser (or check the port in console log in webstorm)
+
+all steps from 1 to 6 performed only once !!!!
+
+To get update from github:
+go to VCS->Git->Pull
+
+To commit your changes locally:
+in webstorm, on the file or directory you rightClick->git->commit. (or CTRL+K)
+
+To Push your locally committed changes to GitHUb:
+VCS->Git->Push (or CTRL+SHIFT+K)
+
+Bluemix data:
+
+install tools (once)
+https://github.com/cloudfoundry/cli/releases/
+
+api endpoint  https://api.ng.bluemix.net
+email  r.semenyk@gmail.com
+pass ask roman

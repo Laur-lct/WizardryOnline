@@ -1,0 +1,13 @@
+node_modules
+media_dev
+Documentation
+.idea
+.gitignore
+.gitattributes
+.git
+
+LoginToBluemix.cmd
+PushToBluemix.cmd
+RestartBluemix.cmd
+
+gulpfile.js

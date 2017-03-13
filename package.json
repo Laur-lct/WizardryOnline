@@ -1,0 +1,19 @@
+{
+    "name": "WizardryOnline",
+    "version": "0.0.1",
+    "scripts": {
+        "start": "node ./src/entry.js"
+    },
+    "dependencies": {
+        "restify": "4.3.0",
+        "socket.io": "1.7.3",
+        "cfenv": "*",
+        "glob": ">= 7.1.1"
+    },
+    "devDependencies":{
+        "gulp": "^3.9.1",
+        "gulp-concat": "^2.6.1",
+        "gulp-minify": "^0.0.13",
+        "gulp-watch": "^4.3.6"
+    }
+}
