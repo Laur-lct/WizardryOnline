@@ -22,7 +22,7 @@ ig.module(
             background: null,
             timer: null,
 
-            init: function() {
+            init: function(text, freeze) {
                 // Create the tile for the title image
                 this.title = new tpf.HudTile( this.titleImage, 0, this.titleImage.width, this.titleImage.height);
                 this.title.setPosition(0, 64);
@@ -37,17 +37,22 @@ ig.module(
                 this.timer = new ig.Timer();
                 this.width = ig.system.width;
                 this.height = ig.system.height;
-                this.message = ig.ua.mobile
+                if (text){
+                    this.message = text;
+                    this.isFreeze =freeze;
+                }
+                else
+                    this.message = ig.ua.mobile
                     ? 'Tap to Start'
                     : 'Click to Start';
 
             },
 
             update: function() {
-                if(!this.isConnecting && (ig.input.released('shoot') || ig.input.released('click'))) {
+                if(!this.isFreeze && (ig.input.released('shoot') || ig.input.released('click'))) {
                     ig.client.emit('game.join',{nick:'zeb'});
                     this.message ="Loading...";
-                    this.isConnecting =true;
+                    this.isFreeze =true;
                 }
             },
 

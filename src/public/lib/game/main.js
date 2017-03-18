@@ -62,8 +62,8 @@ ig.module(
                 this.setTitle();
             },
 
-            setTitle: function(mode) {
-                this.menu = new MyTitle(mode);
+            setTitle: function(text,isFrozen) {
+                this.menu = new MyTitle(text,isFrozen);
             },
 
             setGame: function() {

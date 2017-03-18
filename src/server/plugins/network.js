@@ -32,11 +32,13 @@ ig.module(
 
                     if (data) { // new player join
                         data.id = socket.id;
-                        if (ig.game.join(data)){
+                        if (ig.game.join(ig.copy(data))){
                             socket.nick = data.nick;
                             socket.broadcast.emit('game.join', data);
                             var pl =ig.game.player;
-                            data.pos = {x:pl.pos.x, y:pl.pos.y, a:pl.angle};
+                            //todo create normal game state
+                            data.ents = [];
+                            data.ents.push(JSON.stringify(pl));
                             socket.emit('game.join', data);
 
 
@@ -154,8 +156,9 @@ ig.module(
                     ig.system.stopRunLoop();
                 else
                     ig.system.startRunLoop();
-                if (ig.server)
-                    ig.server.gamePause(this.paused)
+                if (ig.server) {
+                    ig.server.gamePause(this.paused);
+                }
             }
         },
 

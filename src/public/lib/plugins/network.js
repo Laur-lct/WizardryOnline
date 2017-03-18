@@ -26,19 +26,21 @@ ig.module(
             }).on('id', function(id) {
                 self.id=id;
             }).on('game.pause', function(isPause) {
-                if (isPause)
-                    ig.game.setTitle(isPause);
-                else
-                    ig.game.setGame();
+                if (ig.game.player){
+                    if (isPause)
+                        ig.game.setTitle("Game paused...",true);
+                    else if(ig.game.player)
+                        ig.game.setGame();
+                }
             }).on('game.join', function(data) {
-                ig.game.loadLevel(data.level);
-                // var pl =ig.game.player;
-                // if(pl && data.pos){
-                //     pl.pos.x = data.pos.x;
-                //     pl.pos.y = data.pos.y;
-                //     pl.angle = data.pos.a;
-                // }
-                ig.game.setGame();
+                if (data.ents) {
+                    ig.game.loadLevel(LevelBase1);
+                    for (var i = 0; i< data.ents.length; i++) {
+                        var e = JSON.parse(data.ents[i]);
+                        ig.game.spawnEntity(e.classType,e.pos.x,e.pos.y, e);
+                    }
+                    ig.game.setGame();
+                }
 
             }).on('input.masterChange', function(data) {
                 var isMe = data.id == self.id;
@@ -48,6 +50,8 @@ ig.module(
                 }
             }).on('input.move', function(input) {
                 var pl =ig.game.player;
+                if (!pl)
+                    return;
                 pl.inputState.dx = input.dx;
                 pl.inputState.dy = input.dy;
                 pl.inputState.da = input.da;
@@ -80,14 +84,21 @@ ig.module(
         connected: function(socket) { },
         // Be sure to call this.parent() to remove entities on reconnect
         // if you override this function.
-        reconnected: function(socket) { 
+        reconnected: function(socket) {
+            console.log("reconnected");
+            ig.game.player = null;
+            this.isMaster=false;
             ig.game.entities.forEach(function(ent) {
                 ig.game.removeEntity(ent);
             });
         },
         disconnected: function(socket) {
             this.isMaster=false;
-            ig.game.setTitle();
+            ig.game.setTitle("Discnnected. Click to reconnect...", false);
+            ig.game.player = null;
+            ig.game.entities.forEach(function(ent) {
+                ig.game.removeEntity(ent);
+            });
         },
         // Entity events
         // ----------------------------------------
