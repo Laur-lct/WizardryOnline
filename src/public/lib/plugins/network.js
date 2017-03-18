@@ -30,8 +30,15 @@ ig.module(
                     ig.game.setTile(isPause);
                 else
                     ig.game.setGame();
-            }).on('game.join', function(isPause) {
+            }).on('game.join', function(data) {
                 ig.game.setGame();
+                var pl =ig.game.player;
+                if(pl && data.pos){
+                    pl.pos.x = data.pos.x;
+                    pl.pos.y = data.pos.y;
+                    pl.angle = data.pos.a;
+                }
+
 
             }).on('input.masterChange', function(data) {
                 var isMe = data.id == self.id;

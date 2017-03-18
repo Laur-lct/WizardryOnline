@@ -34,7 +34,11 @@ ig.module(
                         data.id = socket.id;
                         if (ig.game.join(data)){
                             socket.nick = data.nick;
-                            io.sockets.emit('game.join', data);
+                            socket.broadcast.emit('game.join', data);
+                            var pl =ig.game.player;
+                            data.pos = {x:pl.pos.x, y:pl.pos.y, a:pl.angle};
+                            socket.emit('game.join', data);
+
 
                             if (self.masterSocketId==null) {
                                 self.masterSocketId=socket.id;
