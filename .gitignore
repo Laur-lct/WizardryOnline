@@ -15,8 +15,9 @@ $RECYCLE.BIN/
 node_modules/
 
 media_dev/
-src/public/lib/imapct/
 src/public/lib/weltmeister/
+src/public/lib/impact/
+
 
 # Windows Installer files
 *.cab
