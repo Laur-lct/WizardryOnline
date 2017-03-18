@@ -27,18 +27,18 @@ ig.module(
                 self.id=id;
             }).on('game.pause', function(isPause) {
                 if (isPause)
-                    ig.game.setTile(isPause);
+                    ig.game.setTitle(isPause);
                 else
                     ig.game.setGame();
             }).on('game.join', function(data) {
+                ig.game.loadLevel(data.level);
+                // var pl =ig.game.player;
+                // if(pl && data.pos){
+                //     pl.pos.x = data.pos.x;
+                //     pl.pos.y = data.pos.y;
+                //     pl.angle = data.pos.a;
+                // }
                 ig.game.setGame();
-                var pl =ig.game.player;
-                if(pl && data.pos){
-                    pl.pos.x = data.pos.x;
-                    pl.pos.y = data.pos.y;
-                    pl.angle = data.pos.a;
-                }
-
 
             }).on('input.masterChange', function(data) {
                 var isMe = data.id == self.id;
@@ -87,6 +87,7 @@ ig.module(
         },
         disconnected: function(socket) {
             this.isMaster=false;
+            ig.game.setTitle();
         },
         // Entity events
         // ----------------------------------------

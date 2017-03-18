@@ -88,7 +88,9 @@ tpf.Game = ig.Game.extend({
 		
 		for( var i = 0; i < data.entities.length; i++ ) {
 			var ent = data.entities[i];
-			this.spawnEntity( ent.type, ent.x, ent.y, ent.settings );
+			if (ent.isClientOnly) {
+                this.spawnEntity(ent.type, ent.x, ent.y, ent.settings);
+            }
 		}
         // Call post-init ready function on all entities
 		for( var i = 0; i < this.entities.length; i++ ) {

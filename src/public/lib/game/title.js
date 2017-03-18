@@ -13,6 +13,7 @@ ig.module(
 
             width: 800,
             height: 600,
+            message: '',
 
             font: new tpf.Font( 'media/fredoka-one.font.png' ),
 
@@ -36,12 +37,17 @@ ig.module(
                 this.timer = new ig.Timer();
                 this.width = ig.system.width;
                 this.height = ig.system.height;
+                this.message = ig.ua.mobile
+                    ? 'Tap to Start'
+                    : 'Click to Start';
+
             },
 
             update: function() {
-                if( ig.input.released('shoot') || ig.input.released('click') ) {
+                if(!this.isConnecting && (ig.input.released('shoot') || ig.input.released('click'))) {
                     ig.client.emit('game.join',{nick:'zeb'});
-                    ig.game.setGame();
+                    this.message ="Loading...";
+                    this.isConnecting =true;
                 }
             },
 
@@ -50,11 +56,8 @@ ig.module(
                 ig.system.renderer.pushQuad(this.background);
                 //this.title.draw();
 
-                var message = ig.ua.mobile
-                    ? 'Tap to Start'
-                    : 'Click to Start';
-                var alpha = (Math.sin(this.timer.delta()*4)+1)*0.5;
-                this.font.draw(message, this.width/2, 350, ig.Font.ALIGN.CENTER, alpha);
+                    var alpha = (Math.sin(this.timer.delta() * 4) + 1) * 0.5;
+                    this.font.draw(this.message, this.width / 2, 350, ig.Font.ALIGN.CENTER, alpha);
             }
         });
 

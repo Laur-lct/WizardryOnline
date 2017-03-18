@@ -62,8 +62,8 @@ ig.module(
                 this.setTitle();
             },
 
-            setTitle: function() {
-                this.menu = new MyTitle();
+            setTitle: function(mode) {
+                this.menu = new MyTitle(mode);
             },
 
             setGame: function() {
@@ -71,8 +71,8 @@ ig.module(
                 this.dead = false;
                 this.hud = new MyHud( 800, 600 );
                 // Load the last level we've been in or the default Base1
-                if (!this.player)
-                    this.loadLevel( this.lastLevel || LevelBase1 );
+                //if (!this.player)
+                //    this.loadLevel( this.lastLevel || LevelBase1 );
             },
 
             setupDesktopControls: function() {
@@ -197,11 +197,10 @@ ig.module(
             },
 
             drawHud: function() {
-                if( this.player )
-                    ig.game.hud.draw();
-
                 if( this.menu )
                     this.menu.draw();
+                else if( this.player )
+                    ig.game.hud.draw();
             }
         });
 

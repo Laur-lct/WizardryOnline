@@ -159,8 +159,6 @@ tpf.Entity = ig.Entity.extend({
 		if( this.currentAnim ) {
 			this.currentAnim.update();
 		}
-
-		this.updateQuad();
 	},
 	
 	setLight: function( color ) {
@@ -169,6 +167,8 @@ tpf.Entity = ig.Entity.extend({
 	},
 
 	draw: function() {
+        this.updateQuad();
+
 		if( ig.global.wm ) {
 			return;
 		}

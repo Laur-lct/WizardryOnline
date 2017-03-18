@@ -72,6 +72,7 @@ ig.module(
                 this.camPosCur.x = this.camPosHead.x;
                 this.camPosCur.y = this.camPosHead.y;
                 this.camPosCur.a = this.camPosHead.a;
+                // Update camera position and view angle
                 ig.system.camera.setRotation(0,0, this.camPosCur.a );
                 ig.system.camera.setPosition( this.camPosCur.x + this.size.x/2, this.camPosCur.y + this.size.y/2, 0 );
                 //emit light
@@ -79,8 +80,6 @@ ig.module(
                     ig.game.lightMap.setLightSource(this.camPosCur.x+ this.size.x/2,this.camPosCur.y+ this.size.y/2,this.emittedLight);
                 }
 
-
-                // Update camera position and view angle
                 this.camPosHead.x = this.pos.x;
                 this.camPosHead.y = this.pos.y;
                 this.camPosHead.a = this.angle;
