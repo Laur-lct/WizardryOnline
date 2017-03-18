@@ -8,7 +8,7 @@ ig.module(
         'plugins.network'
     )
     .defines(function(){
-        EntityPlayer = EntityServer.extend({
+        EntityPlayer = ig.Entity.extend({
             type: ig.Entity.TYPE.A,
             collides: ig.Entity.COLLIDES.PASSIVE,
 

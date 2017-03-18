@@ -38,6 +38,7 @@ tpf.Quad = function( width, height, texture ) {
 
 	this._dirty = true;
 	this._verts = new Float32Array(tpf.Quad.SIZE);
+	this.copies = [];
 
 	// vec3 views into the _verts array; needed by gl-matrix
 	this._vertsPos = [
@@ -125,6 +126,20 @@ tpf.Quad = function( width, height, texture ) {
 		v[32] = c.r; v[33] = c.g; v[34] = c.b; // bottom right
 		v[41] = c.r; v[42] = c.g; v[43] = c.b; // bottom left
 		v[50] = c.r; v[51] = c.g; v[52] = c.b; // top right
+
+		if (this.copies.length >0){
+			for (var i=0; i <this.copies.length; i++){
+				v = this.copies[i].b;
+				var off =this.copies[i].i;
+                v[5+off] = c.r; v[6+off] = c.g; v[7+off] = c.b; // top left
+                v[14+off] = c.r; v[15+off] = c.g; v[16+off] = c.b; // top right
+                v[23+off] = c.r; v[24+off] = c.g; v[25+off] = c.b; // bottom left
+
+                v[32+off] = c.r; v[33+off] = c.g; v[34+off] = c.b; // bottom right
+                v[41+off] = c.r; v[42+off] = c.g; v[43+off] = c.b; // bottom left
+                v[50+off] = c.r; v[51+off] = c.g; v[52+off] = c.b; // top right
+			}
+		}
 	};
 	this.setColor(this.color);
 
@@ -142,13 +157,15 @@ tpf.Quad = function( width, height, texture ) {
 	};
 	this.setAlpha(this.color.a);
 
-	this.copyToBuffer = function( buffer, index ) {
+	this.copyToBuffer = function( buffer, index, trackCopy ) {
 		if( this._dirty ) {
 			this._recalcPositions();
 			this._dirty = false;
 		}
 		buffer.set(this._verts, index);
-	};
+		if(trackCopy)
+        	this.copies.push({b:buffer,i:index});
+    };
 };
 
 // This class method is essentially the same as the setUV() instance method,

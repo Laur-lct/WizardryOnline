@@ -40,14 +40,26 @@ ig.module(
                     //ig.game.hud.changeMasterChatMessage
                 }
             }).on('input.move', function(input) {
-                ig.game.player.inputState.dx =  input.dx;
-                ig.game.player.inputState.dy =  input.dy;
-                ig.game.player.inputState.da =  input.da;
-                ig.game.player.pos.x = input.x;
-                ig.game.player.pos.y = input.y;
-                ig.game.player.angle = input.a;
+                var pl =ig.game.player;
+                pl.inputState.dx = input.dx;
+                pl.inputState.dy = input.dy;
+                pl.inputState.da = input.da;
+                pl.pos.x = input.x;
+                pl.pos.y = input.y;
+                pl.angle = input.a;
 
-            // Entity events
+                var xd = input.x - pl.camPosCur.x;
+                var yd = input.y - pl.camPosCur.y;
+                var ad = input.a - pl.camPosCur.a;
+                for(var i = 0; i < pl.camPos.length; i++){
+                    var idxHead = (pl.camPosIdx+i)%pl.camPos.length;
+                    var cp = pl.camPos[idxHead];
+                    var part = (i+1) / pl.camPos.length;
+                    cp.x = pl.camPosCur.x+xd*part;
+                    cp.y = pl.camPosCur.y+yd*part;
+                    cp.a = pl.camPosCur.a+ad*part;
+                }
+                // Entity events
             }).on('entity.create', function(data) {
                 self.entityCreated(data);
             }).on('entity.move', function(data) {
@@ -96,7 +108,8 @@ ig.module(
         },
         emit: function(key, data) {
             this.socket.emit(key, data);
-        }
+        },
+
     });
 
     ig.System.inject({

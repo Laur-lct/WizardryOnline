@@ -48,6 +48,15 @@ tpf.WallMap = tpf.Map.extend({
 			}
 		}
 	},
+	updateLight:function (x,y, color) {
+        for (var name in tpf.WallMap.offsets) {
+            var ty = y - tpf.WallMap.offsets[name].y;
+            var tx = x - tpf.WallMap.offsets[name].x;
+            if (this.hasTile(tx, ty) && this.tileData[ty][tx][name] ){
+                this.tileData[ty][tx][name].quad.setColor(color);
+            }
+        }
+    },
 	
 	getTilesInRect: function( xs, ys, w, h ) {
 		var tiles = [];

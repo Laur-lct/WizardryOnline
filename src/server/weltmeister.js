@@ -12,7 +12,7 @@ function setupWeltmeister(server, opts) {
             globPattern = root + '/' + req.params['glob'];
 
         function handleGlob(er, matches) {
-            for (var i in matches) {
+            for (var i=0; i<matches.length; i++) {
                 matches[i] = matches[i].substring(lib.length);
             }
             res.send(matches);
@@ -96,7 +96,7 @@ function setupWeltmeister(server, opts) {
         dirpath = path.normalize(root + '\\' + dir);
 
         function walkDirectory(err, files) {
-            for (var i in files) {
+            for (var i =0; i< files.length; i++) {
 
                 file = files[i];
                 listItem = dir + file;

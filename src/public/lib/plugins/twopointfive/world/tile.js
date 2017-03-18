@@ -87,7 +87,7 @@ tpf.TileMesh = function( tiles ) {
 
 	for( var i = 0; i < this.length; i++ ) {
 		var tile = tiles[i];
-		tile.quad.copyToBuffer(this.buffer, i * tpf.Quad.SIZE );
+		tile.quad.copyToBuffer(this.buffer, i * tpf.Quad.SIZE, true );
 		if( tile.anim ) {
 			this.animatedTiles.push({tile: tile, offset: i});
 		}

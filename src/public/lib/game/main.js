@@ -70,9 +70,9 @@ ig.module(
                 this.menu = null;
                 this.dead = false;
                 this.hud = new MyHud( 800, 600 );
-
                 // Load the last level we've been in or the default Base1
-                this.loadLevel( this.lastLevel || LevelBase1 );
+                if (!this.player)
+                    this.loadLevel( this.lastLevel || LevelBase1 );
             },
 
             setupDesktopControls: function() {
@@ -166,15 +166,15 @@ ig.module(
 
             processInput:function () {
                 var dx=0, dy=0, da=0; //from 1 to -1
-                if(ig.input.state('forward')) dy = 1;
-                else if(ig.input.state('back')) dy = -1;
+                if(ig.input.state('forward')) dy = 0.5;
+                else if(ig.input.state('back')) dy = -0.5;
 
-                if(ig.input.state('left')) da = 1;
-                else if(ig.input.state('right')) da = -1;
+                if(ig.input.state('left')) da = 0.75;
+                else if(ig.input.state('right')) da = -0.75;
 
                 // Sidestep
-                if(ig.input.state('stepleft')) dx = 1;
-                else if(ig.input.state('stepright')) dx = -1;
+                if(ig.input.state('stepleft')) dx = 0.5;
+                else if(ig.input.state('stepright')) dx = -0.5;
 
                 // Touch controls
                 if( ig.game.touchFieldMove ) {
@@ -184,7 +184,7 @@ ig.module(
                 }
                 if( ig.game.touchFieldTurn ) {
                     var ft = ig.game.touchFieldTurn.input;
-                    da = (ft.dx/400).limit(-1, 1);
+                    da = ft.dx.limit(-1, 1);
                 }
 
                 if (ig.client && ig.client.isMaster && (this.prevInput.dx!=dx ||this.prevInput.dy!=dy ||this.prevInput.da!=da)){

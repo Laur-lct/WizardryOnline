@@ -69,6 +69,10 @@ tpf.Map = ig.BackgroundMap.extend({
 			}
 		}
 	},
+    updateLight:function (x,y, color) {
+		if (this.hasTile(x,y))
+            this.tileData[y][x].quad.setColor(color);
+    },
 
 	getTilesInRect: function( xs, ys, w, h ) {
 		var tiles = [];

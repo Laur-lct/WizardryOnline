@@ -62,6 +62,9 @@ ig.module(
                     if (socket.id == self.masterSocketId){
                         var pl = ig.game.player;
                         pl.inputState = data;
+                        // setTimeout(function () {
+                        //     io.sockets.emit('input.move', {dx: data.dx, dy: data.dy, da:data.da, x: pl.pos.x, y: pl.pos.y, a: pl.angle});
+                        // }, Math.floor(Math.random() * (100 - 10 + 1)) + 10);
                         io.sockets.emit('input.move', {dx: data.dx, dy: data.dy, da:data.da, x: pl.pos.x, y: pl.pos.y, a: pl.angle});
                     }
                 });
@@ -191,7 +194,7 @@ ig.module(
                 this.last.dy   != cur.dy ||
                 this.last.da   != cur.da ||
                 this.last.anim != cur.anim){
-                ig.server.entityMove(this.name,cur);
+                //ig.server.entityMove(this.name,cur);
                 this.last = cur;
             }
         },

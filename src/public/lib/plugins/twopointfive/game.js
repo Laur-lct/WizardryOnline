@@ -71,9 +71,9 @@ tpf.Game = ig.Game.extend({
 		
 		if( floorMap && wallMap ) {
 			wallMap.eraseDisconnectedWalls( floorMap );
-		}		
-		
-		
+		}
+
+
 		// Apply lightmap on all background maps if we have one
 		if( this.lightMap ) {
 			for( var i = 0; i < this.backgroundMaps.length; i++ ) {
@@ -81,7 +81,7 @@ tpf.Game = ig.Game.extend({
 			}
 		}
 
-		// Create the culled sector map, using the floor map as a guide to where the player
+        // Create the culled sector map, using the floor map as a guide to where the player
 		// can travel. Add the geometry from all background maps
 		this.culledSectors = new tpf.CulledSectors( floorMap, this.backgroundMaps, this.sectorSize );
 		
@@ -90,8 +90,7 @@ tpf.Game = ig.Game.extend({
 			var ent = data.entities[i];
 			this.spawnEntity( ent.type, ent.x, ent.y, ent.settings );
 		}
-		
-		// Call post-init ready function on all entities
+        // Call post-init ready function on all entities
 		for( var i = 0; i < this.entities.length; i++ ) {
 			this.entities[i].ready();
 		}
@@ -120,7 +119,9 @@ tpf.Game = ig.Game.extend({
 		if( !this.culledSectors ) {
 			return;
 		}
-
+		if (this.lightMap){
+			this.lightMap.applyLightSources();
+		}
 		
 		ig.system.renderer.setCamera(ig.system.camera);
 
