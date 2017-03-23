@@ -9,7 +9,6 @@ ig.module(
         'plugins.twopointfive.game',
         'plugins.touch-button',
         'plugins.touch-field',
-        //'plugins.gamepad',
 
         'game.levels.base1',
 
@@ -19,7 +18,7 @@ ig.module(
 		'game.entities.pointer'
 
 
-        // ,'plugins.twopointfive.debug'
+         ,'plugins.twopointfive.debug'
     )
     .defines(function(){ "use strict";
 

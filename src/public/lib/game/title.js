@@ -17,21 +17,23 @@ ig.module(
 
             font: new tpf.Font( 'media/fredoka-one.font.png' ),
 
-            titleImage: new ig.Image( 'media/title.png' ),
+            titleImage: new ig.Image( 'media/title.jpg' ),
+            animSheet: new ig.AnimationSheet('media/title-anim.jpg', 100, 98),
+
+            titleIAnimTile: null,
+            titleIAnimation: null,
             title: null,
-            background: null,
             timer: null,
 
             init: function(text, freeze) {
                 // Create the tile for the title image
-                this.title = new tpf.HudTile( this.titleImage, 0, this.titleImage.width, this.titleImage.height);
-                this.title.setPosition(0, 64);
+                this.title = new tpf.HudTile( this.titleImage, 0, 640, 480);
+                this.titleIAnimation = new ig.Animation(this.animSheet, 0.07, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,16], false);
+                this.titleIAnimation.gotoRandomFrame();
 
-                // Create an empty quad with a dark blue color as the background
-                this.background = new tpf.Quad(this.width, this.height);
-                this.background.setPosition(this.width/2, this.height/2,0);
-                this.background.setColor({r:0.46, g:0.3, b:0.5});
-
+                this.titleAnim = new tpf.HudTile(this.animSheet.image, this.titleIAnimation.tile, 100, 98);
+                this.title.setPosition(80, 60,0);
+                this.titleAnim.setPosition(288+80, 209+60);
 
                 this.camera = new tpf.OrthoCamera(this.width, this.height);
                 this.timer = new ig.Timer();
@@ -45,10 +47,11 @@ ig.module(
                     this.message = ig.ua.mobile
                     ? 'Tap to Start'
                     : 'Click to Start';
-
             },
 
             update: function() {
+                this.titleIAnimation.update();
+                this.titleAnim.setTile(this.titleIAnimation.tile);
                 if(!this.isFreeze && (ig.input.released('shoot') || ig.input.released('click'))) {
                     ig.client.emit('game.join',{nick:'zeb'});
                     this.message ="Loading...";
@@ -58,8 +61,8 @@ ig.module(
 
             draw: function() {
                 ig.system.renderer.setCamera(this.camera);
-                ig.system.renderer.pushQuad(this.background);
-                //this.title.draw();
+                this.title.draw();
+                this.titleAnim.draw();
 
                     var alpha = (Math.sin(this.timer.delta() * 4) + 1) * 0.5;
                     this.font.draw(this.message, this.width / 2, 350, ig.Font.ALIGN.CENTER, alpha);
