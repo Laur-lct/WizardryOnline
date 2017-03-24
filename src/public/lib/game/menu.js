@@ -13,7 +13,7 @@ ig.module(
             name: null,
             font: new tpf.Font('media/fredoka-one.font.png'),
             fontTitle: new tpf.Font('media/fredoka-one.font.png'),
-            current: 0,
+            current: -1,
             lineSpacing: 0,
             items: [],
             alpha: 1,
@@ -22,6 +22,13 @@ ig.module(
                 this.height = height;
                 this.y = ypos || (this.height / 4);
                 this.lineSpacing = ig.ua.mobile ? 8 : 0;
+                for (var i = 0; i < this.items.length; i++) {
+                    var item = this.items[i];
+                    if (!item.disabled || !item.disabled()) {
+                        this.current = i;
+                        break;
+                    }
+                }
             },
             moveCursor: function(dir) {
                 do {
@@ -46,17 +53,18 @@ ig.module(
                 var hoverItem = null;
                 for (var i = 0; i < this.items.length; i++) {
                     var item = this.items[i];
-                    var w = this.font.widthForString(item.text) / 2 + this.lineSpacing;
+                    var itemText = typeof (item.text) ==='string' ? item.text: item.text();
+                    var w = this.font.widthForString(itemText) / 2 + this.lineSpacing;
                     if ((!item.disabled || !item.disabled()) && mx > xs - w && mx < xs + w && my > ys - this.lineSpacing && my < ys + this.font.height + this.lineSpacing) {
                         hoverItem = item;
                         this.current = i;
                     }
                     ys += this.font.height + this.lineSpacing;
                 }
-                if (ig.input.released('click') && hoverItem && (ig.system.hasMouseLock || ig.ua.mobile)) {
+                if (ig.input.released('click') && hoverItem && (ig.system.hasMouseLock || ig.ua.mobile) && this.items[this.current].ok) {
                     this.items[this.current].ok();
                 }
-                if (ig.input.released('shoot') && !ig.ua.mobile) {
+                if (ig.input.released('shoot') && !ig.ua.mobile && this.items[this.current].ok) {
                     this.items[this.current].ok();
                 }
             },
@@ -69,8 +77,10 @@ ig.module(
                 }
                 for (var i = 0; i < this.items.length; i++) {
                     var item = this.items[i];
-                    var alpha = (i == this.current) ? 1 : ((!item.disabled || !item.disabled()) ? 0.5 : 0.2);
-                    this.font.draw(item.text, xs, ys, ig.Font.ALIGN.CENTER, alpha * this.alpha);
+                    var itemText = typeof (item.text) ==='string' ? item.text: item.text();
+                    var alpha = (i == this.current) ? 1 : ((!item.disabled || !item.disabled()) ? 0.5 : 0.15);
+
+                    this.font.draw(itemText, xs, ys, ig.Font.ALIGN.CENTER, alpha * this.alpha);
                     ys += this.font.height + this.lineSpacing;
                 }
             }

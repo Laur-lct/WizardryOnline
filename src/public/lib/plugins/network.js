@@ -11,24 +11,32 @@ ig.module(
         socket: null,
         id:null,
         isMaster:false,
+
+        spectatorsCount:0,
+        playerNames:[],
+        myNick: null,
         init: function() {
             var self = this;
 
             this.socket = io.connect(window.location.origin);
             // This client's events
             this.socket.on('connect', function() {
-               self.connected(this); 
+
             }).on('reconnect', function() {
                self.reconnected(this);
             }).on('disconnect', function() {
                self.disconnected(this);
             // basic game events
-            }).on('id', function(id) {
-                self.id=id;
+            }).on('id', function(data) {
+                self.id=data.socketId;
+                self.playerNames=data.playerNames;
+                self.spectatorsCount=data.spectatorsCount;
+                ig.game.titleScreen.setMenu(MenuMain);
+
             }).on('game.pause', function(isPause) {
                 if (ig.game.player){
                     if (isPause)
-                        ig.game.setTitle("Game paused...",true);
+                        ig.game.setTitle(MenuLoader,"Game paused...");
                     else if(ig.game.player)
                         ig.game.setGame();
                 }
@@ -41,6 +49,21 @@ ig.module(
                     }
                     ig.game.setGame();
                 }
+                if(data.nick) {
+                    self.playerNames.push(data.nick);
+                    self.myNick = data.nick;
+                }
+                if(data.spectatorsCount != null)
+                    self.spectatorsCount = data.spectatorsCount;
+
+            }).on('game.leave', function(data) {
+                if(data.nick){
+                    for(var i = self.playerNames.length - 1; i >= 0; i--)
+                        if(self.playerNames[i] === data.nick)
+                            self.playerNames.splice(i, 1);
+                }
+                if(data.spectatorsCount != null)
+                    self.spectatorsCount = data.spectatorsCount;
 
             }).on('input.masterChange', function(data) {
                 var isMe = data.id == self.id;
@@ -81,7 +104,6 @@ ig.module(
         },
         // This client's events
         // ----------------------------------------
-        connected: function(socket) { },
         // Be sure to call this.parent() to remove entities on reconnect
         // if you override this function.
         reconnected: function(socket) {
@@ -94,7 +116,10 @@ ig.module(
         },
         disconnected: function(socket) {
             this.isMaster=false;
-            ig.game.setTitle("Discnnected. Click to reconnect...", false);
+            var nick = this.myNick;
+            ig.game.setTitle(MenuLoader, "Discnnected. Click to reconnect...", function () {
+                ig.client.emit('game.join',{nick:nick})
+            });
             ig.game.player = null;
             ig.game.entities.forEach(function(ent) {
                 ig.game.removeEntity(ent);

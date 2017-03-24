@@ -19,23 +19,24 @@ ig.module(
     NetworkManager = ig.Class.extend({
         masterSocketId: null,
         clients: { },
-        spectators: 0,
+        spectatorsCount: 0,
         init: function() {
             var self = this;
             var io = ig.io;
             io.sockets.on('connection', function(socket) {
-                socket.emit('id',socket.id);
+                socket.emit('id',{socketId:socket.id, playerNames:ig.game.getPlayerNames(), spectatorsCount:self.spectatorsCount});
                 console.log("id "+ socket.id +' connected');
 
                 socket.on('game.join', function(data){
-                    self.clients[socket.id]=socket;
-
                     if (data) { // new player join
                         data.id = socket.id;
                         if (ig.game.join(ig.copy(data))){
+                            self.clients[socket.id]=socket;
+
                             socket.nick = data.nick;
                             socket.broadcast.emit('game.join', data);
                             var pl =ig.game.player;
+
                             //todo create normal game state
                             data.ents = [];
                             data.ents.push(JSON.stringify(pl));
@@ -49,11 +50,13 @@ ig.module(
                         }
                     }
                     else { //spectator joined
-                        // send game state
-                        self.spectators = Object.size(self.clients) - ig.game.getPlayerCount();
-                        socket.emit('game.state', {gameState: ig.game.save()});
+                        self.clients[socket.id]=socket;
+
+                        self.spectatorsCount = Object.size(self.clients) - ig.game.getPlayerCount();
                         //send all others that spectator joined
-                        io.sockets.emit('game.spectators', {spectators: self.spectators});
+                        io.sockets.emit('game.join', {spectatorsCount:self.spectatorsCount});
+                        // send game state
+                        socket.emit('game.state', {gameState: ig.game.save()});
                     }
                 });
 
@@ -94,8 +97,9 @@ ig.module(
                 socket.on('disconnect', function () {
                     if (socket.nick){
                         ig.game.leave(socket.id);
-                        socket.broadcast.emit('leave', {id: socket.id, nick:socket.nick});
                         delete self.clients[socket.id];
+                        self.spectatorsCount = Object.size(self.clients) - ig.game.getPlayerCount();
+                        socket.broadcast.emit('game.leave', {id: socket.id, nick:socket.nick, spectatorsCount:self.spectatorsCount});
                     }
 
                     console.log("id "+ socket.id +' left');
@@ -252,6 +256,6 @@ ig.module(
         var loader = new (loaderClass || ig.Loader)(gameClass, ig.resources);
         setTimeout(function() {
             loader.load();
-        }, 100);
+        }, 5);
     };
 });

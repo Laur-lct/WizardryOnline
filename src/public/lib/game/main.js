@@ -24,11 +24,11 @@ ig.module(
 
 
         var MyGame = tpf.Game.extend({
-            sectorSize: 4,
+            maxPlayers:4,
             hud: null,
 
             dead: false,
-            menu: null,
+            titleScreen: null,
 
             touchButtons: null,
             touchFieldMove: null,
@@ -58,15 +58,15 @@ ig.module(
                 else
                     this.setupDesktopControls();
 
-                this.setTitle();
+                this.setTitle(MenuLoader, 'Connecting...');
             },
 
-            setTitle: function(text,isFrozen) {
-                this.menu = new MyTitle(text,isFrozen);
+            setTitle: function(menuClass,text,action) {
+                this.titleScreen = new MainTitle(menuClass,text,action);
             },
 
             setGame: function() {
-                this.menu = null;
+                this.titleScreen = null;
                 this.dead = false;
                 this.hud = new MyHud( 800, 600 );
                 // Load the last level we've been in or the default Base1
@@ -146,9 +146,9 @@ ig.module(
 
 
             update: function() {
-                if( this.menu ) {
+                if( this.titleScreen ) {
                     // If we have a menu don't update anything else
-                    this.menu.update();
+                    this.titleScreen.update();
                     return;
                 }
                 if( this.dead ) {
@@ -196,8 +196,8 @@ ig.module(
             },
 
             drawHud: function() {
-                if( this.menu )
-                    this.menu.draw();
+                if( this.titleScreen )
+                    this.titleScreen.draw();
                 else if( this.player )
                     ig.game.hud.draw();
             }

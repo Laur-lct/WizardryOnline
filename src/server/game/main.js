@@ -33,6 +33,14 @@ ig.module(
                 return 0;
             },
 
+            getPlayerNames: function () {
+                var res = [];
+                if( this.player)
+                    for (var c in this.player.connectedCharacters)
+                        res.push(this.player.connectedCharacters[c].nick)
+                return res;
+            },
+
             join: function (data) {
                 if (this.getPlayerCount() < this.maxPlayers){
                     this.player.connectedCharacters[data.id] = data;

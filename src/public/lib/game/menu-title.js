@@ -11,47 +11,58 @@ ig.module(
     )
     .defines(function() {
         "use strict";
-        var MenuTitle = ig.Menu.extend({
+        var MenuMain = ig.Menu.extend({
             items: [{
-                text: 'Join Game',
-                disabled: function() {
-                    return !ig.client.MaxPlayerCountReached;
-                },
-                ok: function() {
-                    ig.game.menu.setMenu(MenuChoosePlayer);
-                }
-            }, {
                 text: 'Create Game',
                 disabled: function() {
-                    return true;
+                    return ig.client.playerNames.length > 0;
                 },
                 ok: function() {
                     ig.game.continueSavedGame();
+                    ig.game.titleScreen.setMenu(MenuChoosePlayer);
                 }
-            }
-            ]
+            }, {
+                text: function () {
+                    return 'Join Game ('+ig.client.playerNames.length +'/'+ig.game.maxPlayers+')';
+                },
+                disabled: function() {
+                    return ig.client.playerNames.length >= ig.game.maxPlayers;
+                },
+                ok: function() {
+                    ig.game.titleScreen.setMenu(MenuChoosePlayer);
+                }
+            }]
+        });
+        var MenuLoader = ig.Menu.extend({
+            items: [{text: 'Loading...'}]
         });
         var MenuChoosePlayer = ig.Menu.extend({
+            joinAndSwitchMenu: function (nick) {
+                return function () {
+                    if (nick) ig.client.emit('game.join',{nick:nick});
+                    else ig.client.emit('game.join');
+                    ig.game.titleScreen.setMenu(MenuLoader);
+                };
+            },
             items: [{
                 text: 'Mage',
-                ok: function() {
-                    ig.game.newGame(Xibalba.Game.DIFFICULTY.NORMAL);
-                }
+                disabled: function () {return ig.client.playerNames.indexOf('Mage') >=0;},
+                ok: this.joinAndSwitchMenu('Mage')
             }, {
                 text: 'Warrior',
-                ok: function() {
-                    ig.game.newGame(Xibalba.Game.DIFFICULTY.HARD);
-                }
+                disabled: function () {return ig.client.playerNames.indexOf('Warrior') >=0;},
+                ok: this.joinAndSwitchMenu('Warrior')
             }, {
                 text: 'Ranger',
-                ok: function() {
-                    ig.game.newGame(Xibalba.Game.DIFFICULTY.HARD);
-                }
+                disabled: function () { return ig.client.playerNames.indexOf('Ranger') >=0;},
+                ok: this.joinAndSwitchMenu('Ranger')
             }, {
-                text: 'Losos',
-                ok: function() {
-                    ig.game.newGame(Xibalba.Game.DIFFICULTY.HARD);
-                }
+                text: 'Losos',disabled: function () {return ig.client.playerNames.indexOf('Losos') >=0;},
+                ok: this.joinAndSwitchMenu('Losos')
+            }, {
+                text: 'Join as spectator',
+                disabled: function() {return true;},
+                ok: this.joinAndSwitchMenu()
             }]
         });
         MenuTitle = ig.Class.extend({
