@@ -118,8 +118,6 @@ ig.module(
                 this.titleAnim.setPosition(288+80, 209+60);
 
                 this.camera = new tpf.OrthoCamera(this.width, this.height);
-                this.width = ig.system.width;
-                this.height = ig.system.height;
 
                 this.cursor = new tpf.HudTile(this.cursorImage, 0, this.cursorImage.width, this.cursorImage.height);
                 this.cursor.x = this.width / 2;
@@ -140,10 +138,17 @@ ig.module(
 
                 if (ig.system.isFullscreen || ig.system.hasMouseLock ) {
                     if (ig.input.mouseDelta.x || ig.input.mouseDelta.y) {
-                        this.cursor.x = (this.cursor.x + ig.input.mouseDelta.x).limit(0, this.width - 2);
-                        this.cursor.y = (this.cursor.y + ig.input.mouseDelta.y).limit(0, this.height - 2);
+                        var s = this.width / ig.system.width;
+                        this.cursor.x = (this.cursor.x + ig.input.mouseDelta.x * s).limit(0, this.width - 2);
+                        this.cursor.y = (this.cursor.y + ig.input.mouseDelta.y * s).limit(0, this.height - 2);
                         this.cursor.setPosition(this.cursor.x, this.cursor.y, 0);
                     }
+                }
+                else if (ig.ua.mobile && ig.input.released('click')){
+                    var sw = this.width / ig.system.width;
+                    var sh = this.height / ig.system.height;
+                    this.cursor.x = ig.input.mouse.x * sw;
+                    this.cursor.y = ig.input.mouse.y * sh;
                 }
                 this.currentMenu.update(this.cursor.x, this.cursor.y);
             },

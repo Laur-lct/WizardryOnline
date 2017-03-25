@@ -5,8 +5,7 @@ ig.module(
     "game.entities.pointer"
 ).requires(
     'impact.entity',
-    "plugins.twopointfive.entity",
-    'plugins.mouse-delta'
+    "plugins.twopointfive.entity"
 
 ).defines(function() {
     EntityPointer = ig.Entity.extend({

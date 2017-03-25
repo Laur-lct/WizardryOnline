@@ -5,10 +5,11 @@ ig.module(
         'impact.game',
         'impact.font',
 
-        'plugins.network',
         'plugins.twopointfive.game',
         'plugins.touch-button',
         'plugins.touch-field',
+        'plugins.mouse-delta',
+        'plugins.network',
 
         'game.levels.base1',
 
