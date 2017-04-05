@@ -6,11 +6,16 @@ How to start the server part from WebStorm.
 4. Open our project, set project configuration (Run -> Edit Configurations) start script is server\GameServer.js, working directory is full path to Just_like_wizardry
 5. go to tools > Open Terminal, type "npm install" If error occurs, create empty folder C:\Users\*Username*\AppData\Roaming\npm
 6. go to File->Settings->JavaScript->libraries , check the box with "Node.Js Globals"
+7. copy your whole impact and weltmeister folders to src\public\lib\
+8. go to the file src\public\lib\weltmeister\config.js and replace lines 121,122,123 with following:
+		'save': '/worldmaster/save',
+		'browse': '/worldmaster/browse',
+		'glob': '/worldmaster/glob'
 
-7. start server Run > Run or debug.
-8. open localhost:6001 in browser (or check the port in console log in webstorm)
+9. start server Run > Run or debug.
+10. open localhost:6001 in browser (or check the port in console log in webstorm)
 
-all steps from 1 to 6 performed only once !!!!
+all steps from 1 to 8 performed only once !!!!
 
 To get update from github:
 go to VCS->Git->Pull
