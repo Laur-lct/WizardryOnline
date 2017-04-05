@@ -3,6 +3,7 @@ ig.module(
 )
     .requires(
         'game.menu',
+        'game.ui.pointer',
         'plugins.twopointfive.font',
         'plugins.twopointfive.world.tile'
     )
@@ -90,41 +91,31 @@ ig.module(
             background:null,
             font: new tpf.Font( 'media/fredoka-one.font.png' ),
 
-            titleImage: new ig.Image( 'media/title.jpg' ),
-            cursorImage: new ig.Image('media/cursor.png'),
-            animSheet: new ig.AnimationSheet('media/title-anim.jpg', 100, 98),
+            titleImage: new ig.Image( 'media/title4.png' ),
+            //animSheet: new ig.AnimationSheet('media/title3.png', 500, 500),
 
             titleTile: null,
-            titleIAnimTile: null,
-            titleIAnimation: null,
-
-            cursor:null,
+            //titleIAnimTile: null,
+            //titleIAnimation: null,
 
             init: function(menuClass, text, action) {
 
                 // todo remove later
                 this.background = new tpf.Quad(this.width, this.height);
                 this.background.setPosition(this.width/2, this.height/2,0);
-                this.background.setColor({r:0, g:0, b:0});
+                this.background.setColor({r:26/255, g:19/255, b:19/255});
 
                 // Create the tile for the title image
-                this.titleTile = new tpf.HudTile( this.titleImage, 0, 640, 480);
-                this.titleTile.setPosition(80, 60,0);
+                this.titleTile = new tpf.HudTile(this.titleImage, 0, this.titleImage.width, this.titleImage.height);
+                this.titleTile.setPosition(0, 0,0);
 
-                this.titleIAnimation = new ig.Animation(this.animSheet, 0.07, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,16], false);
-                this.titleIAnimation.gotoRandomFrame();
+                //this.titleIAnimation = new ig.Animation(this.animSheet, 0.07, [42,43,44,45,46,47,36,37,38,39,40,41,30,31,32,33,34,35,24,25,26,27,28,29,18,19,20,21,22,23,12,13,14,15,16,17,6,7,8,9,10,11,0,1,2,3,4], false);
+                //this.titleIAnimation.gotoRandomFrame();
 
-                this.titleAnim = new tpf.HudTile(this.animSheet.image, this.titleIAnimation.tile, 100, 98);
-                this.titleAnim.setPosition(288+80, 209+60);
+                //this.titleAnim = new tpf.HudTile(this.animSheet.image, this.titleIAnimation.tile, 100, 98);
+                //this.titleAnim.setPosition(288+80, 209+60);
 
                 this.camera = new tpf.OrthoCamera(this.width, this.height);
-
-                this.cursor = new tpf.HudTile(this.cursorImage, 0, this.cursorImage.width, this.cursorImage.height);
-                this.cursor.x = this.width / 2;
-                this.cursor.y = this.height / 2;
-                this.cursor.setPosition(this.cursor.x,this.cursor.y);
-
-
                 this.setMenu(menuClass ? menuClass : MenuMain, text, action);
             },
 
@@ -133,34 +124,17 @@ ig.module(
             },
 
             update: function() {
-                this.titleIAnimation.update();
-                this.titleAnim.setTile(this.titleIAnimation.tile);
-
-                if (ig.system.isFullscreen || ig.system.hasMouseLock ) {
-                    if (ig.input.mouseDelta.x || ig.input.mouseDelta.y) {
-                        var s = this.width / ig.system.width;
-                        this.cursor.x = (this.cursor.x + ig.input.mouseDelta.x * s).limit(0, this.width - 2);
-                        this.cursor.y = (this.cursor.y + ig.input.mouseDelta.y * s).limit(0, this.height - 2);
-                        this.cursor.setPosition(this.cursor.x, this.cursor.y, 0);
-                    }
-                }
-                else if (ig.ua.mobile && ig.input.released('click')){
-                    var sw = this.width / ig.system.width;
-                    var sh = this.height / ig.system.height;
-                    this.cursor.x = ig.input.mouse.x * sw;
-                    this.cursor.y = ig.input.mouse.y * sh;
-                }
-                this.currentMenu.update(this.cursor.x, this.cursor.y);
+                //this.titleIAnimation.update();
+                //this.titleTile.setTile(this.titleIAnimation.tile);
+                this.currentMenu.update(ig.game.pointer.x, ig.game.pointer.y);
             },
 
             draw: function() {
                 ig.system.renderer.setCamera(this.camera);
                 ig.system.renderer.pushQuad(this.background);
                 this.titleTile.draw();
-                this.titleAnim.draw();
+                //this.titleAnim.draw();
                 this.currentMenu.draw();
-                if(ig.system.hasMouseLock)
-                    this.cursor.draw();
             }
         });
 

@@ -8,25 +8,27 @@ ig.module(
         'plugins.twopointfive.game',
         'plugins.touch-button',
         'plugins.touch-field',
-        'plugins.mouse-delta',
         'plugins.network',
 
         'game.levels.base1',
 
         'game.title',
-        'game.hud',
+        'game.ui.hud',
 
 		'game.entities.pointer'
 
 
-         ,'plugins.twopointfive.debug'
+         //,'plugins.twopointfive.debug'
     )
     .defines(function(){ "use strict";
 
+        var width = 800;
+        var height = 600;
 
         var MyGame = tpf.Game.extend({
             maxPlayers:4,
             hud: null,
+            pointer: null,
 
             dead: false,
             titleScreen: null,
@@ -59,6 +61,7 @@ ig.module(
                 else
                     this.setupDesktopControls();
 
+                this.pointer = new Pointer(width,height);
                 this.setTitle(MenuLoader, 'Connecting...');
             },
 
@@ -69,7 +72,7 @@ ig.module(
             setGame: function() {
                 this.titleScreen = null;
                 this.dead = false;
-                this.hud = new MyHud( 800, 600 );
+                this.hud = new MyHud( width, height );
                 // Load the last level we've been in or the default Base1
                 //if (!this.player)
                 //    this.loadLevel( this.lastLevel || LevelBase1 );
@@ -147,6 +150,7 @@ ig.module(
 
 
             update: function() {
+                this.pointer.update();
                 if( this.titleScreen ) {
                     // If we have a menu don't update anything else
                     this.titleScreen.update();
@@ -200,7 +204,8 @@ ig.module(
                 if( this.titleScreen )
                     this.titleScreen.draw();
                 else if( this.player )
-                    ig.game.hud.draw();
+                    this.hud.draw();
+                this.pointer.draw();
             }
         });
 
@@ -209,9 +214,6 @@ ig.module(
             (ig.System.hasWebGL() ? 'webgl' : 'no-webgl') + ' ' +
             (ig.ua.mobile ? 'mobile' : 'desktop');
 
-
-        var width = 800;
-        var height = 600;
 
         if( window.Ejecta ) {
             var canvas = ig.$('#canvas');

@@ -22,7 +22,7 @@ ig.module(
             init: function(width, height, ypos) {
                 this.width = width;
                 this.height = height;
-                this.y = ypos || (this.height / 4);
+                this.y = ypos || (this.height / 2);
                 this.lineSpacing = ig.ua.mobile ? 8 : 0;
                 this.alphaActiveNonSelected = ig.ua.mobile ? 0.6: 0.5;
                 if (!ig.ua.mobile){
