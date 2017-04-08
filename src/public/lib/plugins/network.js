@@ -85,6 +85,10 @@ ig.module(
                 var xd = input.x - pl.camPosCur.x;
                 var yd = input.y - pl.camPosCur.y;
                 var ad = input.a - pl.camPosCur.a;
+                while (ad > Math.PI)
+                    ad-=Math.PI*2;
+                while (this.angle < -Math.PI)
+                    ad+=Math.PI*2;
                 for(var i = 0; i < pl.camPos.length; i++){
                     var idxHead = (pl.camPosIdx+i)%pl.camPos.length;
                     var cp = pl.camPos[idxHead];

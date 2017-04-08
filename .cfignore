@@ -9,5 +9,6 @@ Documentation
 LoginToBluemix.cmd
 PushToBluemix.cmd
 RestartBluemix.cmd
+StartLocally.cmd
 
 gulpfile.js

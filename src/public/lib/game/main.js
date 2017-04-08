@@ -36,6 +36,8 @@ ig.module(
             touchButtons: null,
             touchFieldMove: null,
             touchFieldTurn: null,
+            backImage: new ig.Image( 'media/backImagets.png' ),
+            skyOffset: null,
 
             gravity: 4,
             prevInput: {dx:0,dy:0,da:0},
@@ -63,6 +65,11 @@ ig.module(
 
                 this.pointer = new Pointer(width,height);
                 this.setTitle(MenuLoader, 'Connecting...');
+
+                // Create the tile for the sky image
+                this.backImageTile = new tpf.HudTile(this.backImage, 0, this.backImage.width, this.backImage.height);
+                this.backImageTile.setPosition(0, 0,0);
+                this.skyOffset = this.backImageTile.tileWidth / (Math.PI * 2);
             },
 
             setTitle: function(menuClass,text,action) {

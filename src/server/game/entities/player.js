@@ -8,6 +8,8 @@ ig.module(
         'plugins.network'
     )
     .defines(function(){
+        var _pi2 =Math.PI/2;
+        var _2pi =Math.PI*2;
         EntityPlayer = ig.Entity.extend({
             type: ig.Entity.TYPE.A,
             collides: ig.Entity.COLLIDES.PASSIVE,
@@ -33,6 +35,10 @@ ig.module(
                 var dx=this.inputState.dx;
                 var dy=this.inputState.dy;
                 this.angle += this.turnSpeed * this.inputState.da * ig.system.tick;
+                while (this.angle > Math.PI)
+                    this.angle-=_2pi;
+                while (this.angle < -Math.PI)
+                    this.angle+=_2pi;
 
                 // Normalize movement vector
                 if( Math.abs(dx) + Math.abs(dy) > 1 ) {
@@ -40,8 +46,8 @@ ig.module(
                     dy *= Math.SQRT1_2;
                 }
 
-                this.vel.x = -Math.sin(this.angle) * dy * this.moveSpeed - Math.sin(this.angle+Math.PI/2) * dx * this.moveSpeed;
-                this.vel.y = -Math.cos(this.angle) * dy * this.moveSpeed - Math.cos(this.angle+Math.PI/2) * dx * this.moveSpeed;
+                this.vel.x = -Math.sin(this.angle) * dy * this.moveSpeed - Math.sin(this.angle+_pi2) * dx * this.moveSpeed;
+                this.vel.y = -Math.cos(this.angle) * dy * this.moveSpeed - Math.cos(this.angle+_pi2) * dx * this.moveSpeed;
 
                 // Calculate new position based on velocity; update sector and light etc...
                 this.parent();

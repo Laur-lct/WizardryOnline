@@ -25,7 +25,6 @@ tpf.Game = ig.Game.extend({
 	culledSectors: null,
 	sectorSize: 4,
 	clearColor: null,
-
 	clearLevel: function() {
 		for( var i = 0; i < this.entities.length; i++ ) {
 			if( this.entities[i] instanceof tpf.Entity ) {
@@ -40,7 +39,8 @@ tpf.Game = ig.Game.extend({
 		this.backgroundMaps = [];
 
 		this.lightMap = null;
-	},
+		this.backImage = null;
+    },
 
 
 	loadLevel: function( data ) {
@@ -108,6 +108,20 @@ tpf.Game = ig.Game.extend({
 			ig.system.renderer.gl.clearColor(c[0],c[1],c[2],1);
 		}
 		ig.system.renderer.clear(!!this.clearColor, true);
+
+		if (this.backImageTile) {
+            var offset = -this.skyOffset * ig.system.camera.rotation[1];
+            if (offset < 0) {
+                this.backImageTile.setPosition(-this.backImageTile.tileWidth - offset, 0);
+                this.backImageTile.draw();
+            }
+            this.backImageTile.setPosition(-offset, 0);
+            this.backImageTile.draw();
+            if (offset + ig.system.width > this.backImageTile.tileWidth) {
+                this.backImageTile.setPosition(offset + ig.system.width - this.backImageTile.tileWidth, 0);
+                this.backImageTile.draw();
+            }
+        }
 		
 		this.drawWorld();
 

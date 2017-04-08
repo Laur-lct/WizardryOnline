@@ -8,11 +8,14 @@ ig.module(
         'plugins.twopointfive.entity'
     )
     .defines(function(){
+        var _pi2 =Math.PI/2;
+        var _2pi =Math.PI*2;
         EntityPlayer = ig.Entity.extend({
             type: ig.Entity.TYPE.A,
             collides: ig.Entity.COLLIDES.PASSIVE,
 
             size: {x: 32, y: 32},
+            halfSize: 16,
             angle: 0,
             turnSpeed: (120).toRad(),
             moveSpeed: 192,
@@ -45,14 +48,19 @@ ig.module(
                 for(var i=this.camPos.length; i < 6; i++){
                     this.camPos.push({x:this.pos.x,y:this.pos.y,a:this.pos.angle})
                 }
-                ig.system.camera.position[0] = this.pos.x + this.size.x/2;
-                ig.system.camera.position[2] = this.pos.y + this.size.y/2;
+                ig.system.camera.position[0] = this.pos.x + this.halfSize;
+                ig.system.camera.position[2] = this.pos.y + this.halfSize;
             },
 
             update: function() {
                 var dx=this.inputState.dx;
                 var dy=this.inputState.dy;
                 this.angle += this.turnSpeed * this.inputState.da * ig.system.tick;
+                while (this.angle > Math.PI)
+                    this.angle-=_2pi;
+                while (this.angle < -Math.PI)
+                    this.angle+=_2pi;
+
 
 
                 // Normalize movement vector
@@ -61,8 +69,8 @@ ig.module(
                     dy *= Math.SQRT1_2;
                 }
 
-                this.vel.x = -Math.sin(this.angle) * dy * this.moveSpeed - Math.sin(this.angle + Math.PI/2) * dx * this.moveSpeed;
-                this.vel.y = -Math.cos(this.angle) * dy * this.moveSpeed - Math.cos(this.angle + Math.PI/2) * dx * this.moveSpeed;
+                this.vel.x = -Math.sin(this.angle) * dy * this.moveSpeed - Math.sin(this.angle + _pi2) * dx * this.moveSpeed;
+                this.vel.y = -Math.cos(this.angle) * dy * this.moveSpeed - Math.cos(this.angle + _pi2) * dx * this.moveSpeed;
 
                 // Calculate new position based on velocity; update sector and light etc...
                 this.parent();
@@ -74,10 +82,10 @@ ig.module(
                 this.camPosCur.a = this.camPosHead.a;
                 // Update camera position and view angle
                 ig.system.camera.setRotation(0,0, this.camPosCur.a );
-                ig.system.camera.setPosition( this.camPosCur.x + this.size.x/2, this.camPosCur.y + this.size.y/2, -10 );
+                ig.system.camera.setPosition( this.camPosCur.x + this.halfSize, this.camPosCur.y + this.halfSize, -10 );
                 //emit light
                 if (this.emittedLight && ig.game.lightMap){
-                    ig.game.lightMap.setLightSource(this.camPosCur.x+ this.size.x/2,this.camPosCur.y+ this.size.y/2,this.emittedLight);
+                    ig.game.lightMap.setLightSource(this.camPosCur.x+ this.halfSize,this.camPosCur.y+ this.halfSize,this.emittedLight);
                 }
 
                 this.camPosHead.x = this.pos.x;
