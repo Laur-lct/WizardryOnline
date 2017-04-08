@@ -121,7 +121,7 @@ tpf.HudTile = tpf.Tile.extend({
 			ty = (Math.floor(t * this.tileWidth / this.image.width) * this.tileHeight) / this.image.height,
 			wx = this.tileWidth / this.image.width,
 			wy = this.tileHeight / this.image.height;
-		console.log('tile='+t+' tx='+tx +' ty='+ty);
+		//console.log('tile='+t+' tx='+tx +' ty='+ty);
 		// Flipped-Y
 		this.quad.setUV(tx, 1-(ty+wy), tx+wx, 1-ty);
 	},
