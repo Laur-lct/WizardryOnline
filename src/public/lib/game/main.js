@@ -63,7 +63,7 @@ ig.module(
                 else
                     this.setupDesktopControls();
 
-                this.pointer = new Pointer(width,height);
+                this.pointer = new Pointer(800,600);
                 this.setTitle(MenuLoader, 'Connecting...');
 
                 // Create the tile for the sky image

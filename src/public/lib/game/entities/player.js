@@ -41,6 +41,7 @@ ig.module(
 
             init: function( x, y, settings ) {
                 this.parent( x, y, settings );
+                this.gravityFactor =0;
                 ig.game.player = this;
             },
 

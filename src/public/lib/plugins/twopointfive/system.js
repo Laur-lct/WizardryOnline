@@ -21,8 +21,8 @@ ig.System.inject({
 	isFullscreen: false,
 	hasMouseLock: false,
 
-	initialWidth: 640,
-	initialHeight: 480,
+	initialWidth: 800,
+	initialHeight: 600,
 	fov: 75,
 
 	stereoMode: false,

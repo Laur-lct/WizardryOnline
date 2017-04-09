@@ -117,8 +117,8 @@ tpf.Game = ig.Game.extend({
             }
             this.backImageTile.setPosition(-offset, 0);
             this.backImageTile.draw();
-            if (offset + ig.system.width > this.backImageTile.tileWidth) {
-                this.backImageTile.setPosition(offset + ig.system.width - this.backImageTile.tileWidth, 0);
+            if (offset + 800 > this.backImageTile.tileWidth) {
+                this.backImageTile.setPosition(offset + 800 - this.backImageTile.tileWidth, 0);
                 this.backImageTile.draw();
             }
         }
