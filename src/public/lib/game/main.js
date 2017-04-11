@@ -35,7 +35,6 @@ ig.module(
 
             touchButtons: null,
             touchFieldMove: null,
-            touchFieldTurn: null,
             backImage: new ig.Image( 'media/backImagets.png' ),
             skyOffset: null,
 
@@ -79,7 +78,7 @@ ig.module(
             setGame: function() {
                 this.titleScreen = null;
                 this.dead = false;
-                this.hud = new MyHud( width, height );
+                this.hud = new MyHud( 800, 600 );
                 // Load the last level we've been in or the default Base1
                 //if (!this.player)
                 //    this.loadLevel( this.lastLevel || LevelBase1 );
@@ -112,7 +111,6 @@ ig.module(
             setupTouchControls: function() {
                 if( this.touchButtons ) { this.touchButtons.remove(); }
                 if( this.touchFieldMove ) { this.touchFieldMove.remove(); }
-                if( this.touchFieldTurn ) { this.touchFieldTurn.remove(); }
 
                 // Touch buttons are anchored to either the left or right and top or bottom
                 // edge of the screen.
@@ -122,7 +120,6 @@ ig.module(
                 this.touchButtons.align();
 
                 this.touchFieldMove = new ig.TouchField(0, 0, ig.system.width/2, ig.system.height);
-                this.touchFieldTurn = new ig.TouchField(ig.system.width/2, 0, ig.system.width/2, ig.system.height/4*3);
             },
 
             loadLevel: function( data ) {
@@ -190,18 +187,19 @@ ig.module(
                 // Touch controls
                 if( ig.game.touchFieldMove ) {
                     var fi = ig.game.touchFieldMove.input;
-                    dx = -(fi.x/60).limit(-1, 1);
-                    dy = -(fi.y/60).limit(-1, 1);
-                }
-                if( ig.game.touchFieldTurn ) {
-                    var ft = ig.game.touchFieldTurn.input;
-                    da = ft.dx.limit(-1, 1);
+                    //dx = -(fi.x/60).limit(-1, 1);
+                    dy = -(fi.y/60).limit(-0.75, 0.75);
+                    if (dy < 0.1 && dy > - 0.1)
+                        dy=0;
+                    da = -(fi.x/100).limit(-1, 1);
+                    if (da < 0.1 && da > - 0.1)
+                        da=0;
                 }
 
                 if (ig.client && ig.client.isMaster && (this.prevInput.dx!=dx ||this.prevInput.dy!=dy ||this.prevInput.da!=da)){
                     ig.client.inputMove({dx:dx, dy:dy, da:da});
                 }
-                this.prevInput.dx =dx;
+                //this.prevInput.dx =dx;
                 this.prevInput.dy =dy;
                 this.prevInput.da =da;
 
@@ -247,6 +245,7 @@ ig.module(
             height = window.innerHeight;
         }
 
+        //ig.$("#debugOut").append(navigator.userAgent);
 
         //ig.Sound.use = [ig.Sound.FORMAT.OGG, ig.Sound.FORMAT.M4A];
 
