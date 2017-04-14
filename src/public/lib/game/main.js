@@ -252,7 +252,9 @@ ig.module(
         // Test WebGL support and init
         if( ig.System.hasWebGL() ) {
             ig.main( '#canvas', MyGame, 60, width, height, 1, tpf.Loader );
+            ig.messages=['Welcome to Wizardry online!'];
             ig.system.setClient(NetworkManagerClient);
+
         }
         else {
             ig.$('#game').style.display = 'none';

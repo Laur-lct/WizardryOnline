@@ -21,7 +21,6 @@ ig.module(
             this.socket = io.connect(window.location.origin);
             // This client's events
             this.socket.on('connect', function() {
-
             }).on('reconnect', function() {
                self.reconnected(this);
             }).on('disconnect', function() {
@@ -32,13 +31,18 @@ ig.module(
                 self.playerNames=data.playerNames;
                 self.spectatorsCount=data.spectatorsCount;
                 ig.game.titleScreen.setMenu(MenuMain);
+                ig.messages.push({sys:'SYSTEM: Connected to the game server'});
 
             }).on('game.pause', function(isPause) {
                 if (ig.game.player){
-                    if (isPause)
+                    if (isPause){
                         ig.game.setTitle(MenuLoader,"Game paused...");
-                    else if(ig.game.player)
+                        ig.messages.push({sys:'Game paused'});
+                    }
+                    else if(ig.game.player) {
                         ig.game.setGame();
+                        ig.messages.push({sys:'Game unpaused'});
+                    }
                 }
             }).on('game.join', function(data) {
                 if (data.ents) {
@@ -52,15 +56,19 @@ ig.module(
                 if(data.nick) {
                     self.playerNames.push(data.nick);
                     self.myNick = data.nick;
+                    ig.messages.push({sys:data.nick +' joined game'});
                 }
-                if(data.spectatorsCount != null)
+                if(data.spectatorsCount != null) {
                     self.spectatorsCount = data.spectatorsCount;
+                    ig.messages.push({sys:'Someone is watching you (spectators '+self.spectatorsCount+')'});
+                }
 
             }).on('game.leave', function(data) {
                 if(data.nick){
                     for(var i = self.playerNames.length - 1; i >= 0; i--)
                         if(self.playerNames[i] === data.nick)
                             self.playerNames.splice(i, 1);
+                    ig.messages.push({sys:data.nick +' left the game'});
                 }
                 if(data.spectatorsCount != null)
                     self.spectatorsCount = data.spectatorsCount;
@@ -69,7 +77,10 @@ ig.module(
                 var isMe = data.id == self.id;
                 if (self.isMaster != isMe){
                     self.isMaster = isMe;
-                    //ig.game.hud.changeMasterChatMessage
+                    ig.messages.push({sys:'You are the master now!'});
+                }
+                else {
+                    ig.messages.push({sys:'Master changed: '+ data.nick});
                 }
             }).on('input.move', function(input) {
                 var pl =ig.game.player;

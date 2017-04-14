@@ -13,6 +13,7 @@ ig.module(
 tpf.Font = ig.Font.extend({
 	_quads: [],
 	_glAlpha: 1,
+	color: {r:1.0,g:1.0,b:1.0},
 
 	draw: function( text, x, y, align, alpha ) {
 		this._glAlpha = typeof(alpha) != 'undefined' ? alpha : 1;
@@ -29,6 +30,7 @@ tpf.Font = ig.Font.extend({
 		
 		var q = this._quads[c];
 		q.setAlpha(this._glAlpha);
+		q.setColor(this.color);
 		q.setPosition(targetX + charWidth/2, targetY + charHeight/2, 0);
 		ig.system.renderer.pushQuad(q);
 		

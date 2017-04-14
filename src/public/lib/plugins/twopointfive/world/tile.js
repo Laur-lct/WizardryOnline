@@ -110,7 +110,8 @@ tpf.HudTile = tpf.Tile.extend({
 		this.tileHeight = tileHeight || tileWidth;
 		
 		this.quad = new tpf.Quad(this.tileWidth, this.tileHeight, image? this.image.texture: null);
-		this.setTile( tile || 0 );
+		if (image)
+			this.setTile( tile || 0 );
 	},
 
 	setTile: function( t ) {

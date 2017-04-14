@@ -10,105 +10,178 @@ ig.module(
         UiElement = tpf.HudTile.extend({
             x:0,
             y:0,
-            color:{r:0.9, g:0.3, b:0.5},
+            color:{r:1, g:1, b:1},
             show: true,
+            childElements: [],
             onMouseMove:function () {},
             onMouseOut:function () {},
             onClicked:function () {},
-            init: function (x,y, width, height, color, image, tile) {
+            init: function (x,y,image, width, height, color, tile, children) {
+                if (image && !width && !height){
+                    width = image.width;
+                    height = image.height;
+                }
+
                 this.parent(image, tile, width, height);
 
                 this.setPosition(x,y);
-                if (color){
-                    this.color = color;
-                    this.setColor(this.color);
-                }
+                if (color)
+                    this.setColor(color);
+                if (children)
+                    this.childElements = children;
             },
             draw: function() {
                 if(this.show)
                     ig.system.renderer.pushQuad(this.quad);
+                for (var i = 0; i < this.childElements.length; i++)
+                    this.childElements[i].draw();
             },
-
+            setColor:function (c) {
+                this.color = c;
+                this.quad.setColor(this.color);
+            },
             setPosition:function (x,y) {
+                this.parent(x,y);
+                for (var i = 0; i < this.childElements.length; i++)
+                    this.childElements[i].setPosition(x - this.x + this.childElements[i].x, y - this.y+this.childElements[i].y);
                 this.x = x;
                 this.y = y;
-                this.parent(x,y);
+            },
+
+            addElement: function (elem) {
+                elem.setPosition(this.x + elem.x, this.y+elem.y);
+                this.childElements.push(elem);
+            },
+            
+            removeElement: function (elem) {
+                for(var i = this.childElements.length - 1; i >= 0; i--)
+                    if(this.childElements[i] === elem)
+                        this.childElements.splice(i, 1);
             },
             
             checkBounds:function (x,y) {
-                return x >= this.x && x < (this.x+this.tileWidth) && y >= this.y && y < (this.y + this.tileHeight);
+                if (x >= this.x && x < (this.x+this.tileWidth) && y >= this.y && y < (this.y + this.tileHeight)){
+                    for(var i = this.childElements.length - 1; i >= 0; i--){
+                        var obj = this.childElements[i].checkBounds(x,y);
+                        if (obj)
+                            return obj;
+                    }
+                    return this;
+                }
+                return null;
+            }
+        });
+        
+        UiActionIcon = UiElement.extend({
+            selectedColor:{r:0.1, g:1, b:0.1},
+            hoverColor:{r:0.2, g:0.5, b:0.5},
+            init: function (x,y, image, tile) {
+                this.parent(x,y,image, image.height, image.height, null, tile);
+                this.defaultColor = this.color;
+            },
+            onMouseMove: function (){
+              if (this.color!= this.selectedColor && this.color != this.hoverColor)
+                  this.setColor(this.hoverColor);
+            },
+            onMouseOut:function () {
+                if (this.color!= this.selectedColor)
+                    this.setColor(this.defaultColor);
+            },
+            onClicked:function () {
+                if (this.color!= this.selectedColor)
+                    this.setColor(this.selectedColor);
+                else if (this.color != this.hoverColor)
+                    this.setColor(this.hoverColor);
             }
         });
 
-        CharacterAvatarUiElement = UiElement.extend({
+        UiActionButton = UiElement.extend({
+            selectedColor:{r:0.1, g:1, b:0.1},
+            hoverColor:{r:0.2, g:0.5, b:0.5},
+            init: function (x,y, image) {
+                this.parent(x,y,image, image.width, image.height);
+                this.defaultColor = this.color;
+            },
+            onMouseMove: function (){
+                if (this.color!= this.selectedColor && this.color != this.hoverColor)
+                    this.setColor(this.hoverColor);
+            },
+            onMouseOut:function () {
+                if (this.color!= this.selectedColor)
+                    this.setColor(this.defaultColor);
+            },
+            onClicked:function () {
+                if (this.color!= this.selectedColor)
+                    this.setColor(this.selectedColor);
+                else if (this.color != this.hoverColor)
+                    this.setColor(this.hoverColor);
+            }
+        });
+
+        UiAvatarMain = UiElement.extend({
             hpBar:null,
             mpBar:null,
-            avatar:null,
-            origin:1,//left or right
-
-            barWidth:7,
-            barSpacing:1,
-            isExpanded: true,
-            collapsedX:0,
-            expandedX:0,
-            clicked:false,
-            init: function (x,y) {
-                this.parent(x,y,100,80, {r:0.5, g:0.5, b:0.5});
-                this.origin = x < 400 ? 1:-1;
-                this.expandedX = x;
-                this.collapsedX =  this.origin == 1
-                    ? x - this.tileWidth + this.barWidth*2+this.barSpacing*3
-                    : x + this.tileWidth - this.barWidth*2 - this.barSpacing*3;
-                var barPosY = this.pos.y+this.barSpacing;
-                var barPosH = this.size.h-this.barSpacing*2;
-                var hpBarPosX = this.origin == 1 ? (this.pos.x + this.tileWidth - (this.barSpacing+this.barWidth)*2): this.pos.x +this.barSpacing;
-                this.hpBar = new UiElement(hpBarPosX, barPosY,this.barWidth, barPosH, {r:0.9, g:0, b:0});
-                this.mpBar = new UiElement(hpBarPosX+this.barSpacing + this.barWidth, barPosY,this.barWidth, barPosH, {r:0, g:0, b:0.9});
-                //this.avatar = new UiElement(hpBarPosX+this.barSpacing*2+this.barWidth, barPosY,this.barWidth, this.size.h-this.barSpacing);
-
-                //this.timer = new ig.Timer( 5 );
+            barHeight:7,
+            barSpacing:2,
+            init: function (x,y, image) {
+                this.parent(x,y,image, image.width, image.height);
+                this.hpBar = new UiElement(0, image.height + this.barSpacing, null, image.width, this.barHeight, {r:0.9, g:0, b:0});
+                this.mpBar = new UiElement(0, image.height + this.barSpacing * 2 + this.barHeight,null, image.width, this.barHeight, {r:0, g:0, b:0.9});
+                this.addElement(this.hpBar);
+                this.addElement(this.mpBar);
             },
+        });
 
-            draw: function() {
+        UiChat = UiElement.extend({
+            messages: null,
+            font:null,
+            lastCount:0,
+            scroll:0,
+            maxLines: 5,
+            defaultColor: {r:0.7,g:0.7,b:0.7},
+            sysColor: {r:0,g:8,b:0},
+            init: function (x,y, width, height, font) {
+                this.parent(x,y,null, width, height, {r:0,g:0,b:0});
+                this.font = font;
+                this.font.letterSpacing = 2;
+                this.maxLines = Math.floor((height-10)/(font.height+font.lineSpacing));
+                this.messages = ig.messages;
+            },
+            draw:function () {
                 this.parent();
-                this.hpBar.draw();
-                this.mpBar.draw();
+                if (this.lastCount < this.messages.length)
+                    this._addMessages();
+                var maxI = Math.min(this.scroll + this.maxLines +1, this.messages.length);
+                for (var i =this.scroll; i < maxI; i++){
+                    var msg = this.messages[i];
+                    if (msg.sys){
+                        this.font.color =this.sysColor;
+                        this.font.draw(msg.sys, this.x+this.tileWidth/2, this.y+5 + this.font.height*i, ig.Font.ALIGN.CENTER);
+                    }
+                    else
+                        this.font.draw(msg, this.x+5, this.y+5 + this.font.height*i, ig.Font.ALIGN.LEFT);
+                }
+                this.font.color = this.defaultColor;
             },
-
-            updatePos:function (x,y) {
-                this.parent(x,y);
-                var barPosY = this.pos.y+this.barSpacing;
-                //var barPosH = this.size.h-this.barSpacing*2;
-                var hpBarPosX = this.origin == 1 ? (this.pos.x + this.size.w - (this.barSpacing+this.barWidth)*2): this.pos.x +this.barSpacing;
-                this.hpBar.updatePos(hpBarPosX,barPosY);
-                this.mpBar.updatePos(hpBarPosX+this.barWidth+this.barSpacing,barPosY);
-            },
-
-            checkBounds: function (x,y) {
-                var inBounds = this.parent(x,y);
-                if (inBounds && this.pos.x==this.collapsedX)
-                    this.updatePos(this.expandedX,this.pos.y);
-                else if(!inBounds && this.pos.x == this.expandedX && !this.clicked)
-                    this.updatePos(this.collapsedX,this.pos.y);
-                return inBounds;
-            },
-
-            onClicked: function () {
-                this.clicked = !this.clicked;
-                if( this.clicked) this.color.r = 0;
-                else this.color.r = 0.5;
-                this.quad.setColor(this.color);
+            _addMessages:function () {
+                //todo: multiline, colors
+                if (this.messages.length > 100)
+                    this.messages.splice(0, this.messages.length-100);
+                this.scroll = Math.max(0,this.messages.length - this.maxLines);
+                this.lastCount = this.messages.length;
             }
         });
 
 
         MyHud = tpf.Hud.extend({
 
-            font: new tpf.Font( 'media/fredoka-one.font.png' ),
-            angleX:0,
-            angleY:0,
+            font: new tpf.Font( 'media/chatFont.png' ),
             backgroundImg: new ig.Image( 'media/ui/back.png' ),
             iconImg: new ig.Image( 'media/ui/icons.png' ),
+            avatarImg: new ig.Image( 'media/ui/avatar.png' ),
+            readyImg: new ig.Image( 'media/ui/ready.png' ),
+            spellskillsImg: new ig.Image( 'media/ui/spellskills.png' ),
+            elements: [],
             background: null,
             iconHeal:null,
             iconAttack:null,
@@ -116,56 +189,28 @@ ig.module(
             iconDef:null,
             init: function( width, height, showControls ) {
                 this.parent(width, height);
+                var bakc= new UiElement(0,this.height - this.backgroundImg.height, this.backgroundImg);
+                bakc.setAlpha(0.6);
 
-                this.background = this.background = new tpf.Quad(this.backgroundImg.width, this.backgroundImg.height, this.backgroundImg.texture);
-                this.background.setPosition(this.width/2, this.height - this.backgroundImg.height/2,0);
-                this.background.setAlpha(0.6);
+                this.iconAttack = new UiActionIcon(624,30, this.iconImg,0);
+                this.iconDef = new UiActionIcon(666,30, this.iconImg,1 );
+                this.iconHeal = new UiActionIcon(708,30, this.iconImg,2 );
+                this.iconSpells = new UiActionIcon(750,30, this.iconImg,3 );
 
-                this.iconAttack = new tpf.HudTile( this.iconImg, 0, this.iconImg.height);
-                this.iconDef = new tpf.HudTile( this.iconImg, 1, this.iconImg.height);
-                this.iconHeal = new tpf.HudTile( this.iconImg, 2, this.iconImg.height);
-                this.iconSpells = new tpf.HudTile( this.iconImg, 3, this.iconImg.height);
-
-                this.iconAttack.setPosition(624, 490,0);
-                this.iconDef.setPosition(666, 490,0);
-                this.iconHeal.setPosition(708, 490,0);
-                this.iconSpells.setPosition(750, 490,0);
-
+                bakc.addElement(this.iconAttack);
+                bakc.addElement(this.iconDef);
+                bakc.addElement(this.iconHeal);
+                bakc.addElement(this.iconSpells);
+                bakc.addElement(new UiActionButton(706,72, this.readyImg));
+                bakc.addElement(new UiActionButton(624,112, this.spellskillsImg));
+                bakc.addElement(new UiAvatarMain(534,30, this.avatarImg));
+                bakc.addElement(new UiChat(124,30,400,100, this.font));
+                this.elements.push(bakc);
             },
-            objInBounds:null,
             draw: function() {
-                if( ig.game.pointer.dx || ig.game.pointer.dy ) {
-                    var x = ig.game.pointer.x;
-                    var y = ig.game.pointer.y;
-                    // this.objInBounds = null;
-                    // if (this.uiL1.checkBounds(x, y))
-                    //     this.objInBounds = this.uiL1;
-                    // if (this.uiL2.checkBounds(x, y))
-                    //     this.objInBounds = this.uiL2;
-                    // if (this.uiL3.checkBounds(x, y))
-                    //     this.objInBounds = this.uiL3;
-                    // if (this.uiR1.checkBounds(x, y))
-                    //     this.objInBounds = this.uiR1;
-                    // if (this.uiR2.checkBounds(x, y))
-                    //     this.objInBounds = this.uiR2;
-                    // if (this.uiR3.checkBounds(x, y))
-                    //     this.objInBounds = this.uiR3;
-                }
-                // if (ig.input.released('click')){
-                //     if (this.objInBounds)
-                //         this.objInBounds.onClicked();
-                // }
-                    //this.angleY += ig.input.mouseDelta.y/600;
-                    //this.angleX += ig.input.mouseDelta.x/600;
-                    //ig.system.camera.setRotation(this.angleY,0, ig.game.player.angle);
                 this.prepare();
-                ig.system.renderer.pushQuad(this.background);
-                this.iconAttack.draw();
-                this.iconDef.draw();
-                this.iconHeal.draw();
-                this.iconSpells.draw();
-                // Draw the current message (showMessage(text)) and the damage indicator
-                this.drawDefault();
+                for (var i=0; i < this.elements.length; i++)
+                    this.elements[i].draw();
             }
         });
 
