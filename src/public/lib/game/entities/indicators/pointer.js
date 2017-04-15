@@ -2,7 +2,7 @@
  * Created by Roman on 07.03.2017.
  */
 ig.module(
-    "game.entities.pointer"
+    "game.entities.indicators.pointer"
 ).requires(
     'impact.entity',
     "plugins.twopointfive.entity"

@@ -1,5 +1,5 @@
 ig.module( 'game.levels.base1' )
-.requires( 'impact.image','game.entities.player' )
+.requires( 'impact.image','game.entities.player','game.entities.test-enemy' )
 .defines(function(){
 LevelBase1=/*JSON[*/{
 	"entities": [
@@ -7,6 +7,11 @@ LevelBase1=/*JSON[*/{
 			"type": "EntityPlayer",
 			"x": 808,
 			"y": 360
+		},
+		{
+			"type": "EntityTestEnemy",
+			"x": 480,
+			"y": 672
 		}
 	],
 	"layer": [
@@ -203,7 +208,7 @@ LevelBase1=/*JSON[*/{
 			"width": 32,
 			"height": 32,
 			"linkWithCollision": false,
-			"visible": 0,
+			"visible": 1,
 			"tilesetName": "media/tiles/lights-64.png",
 			"repeat": false,
 			"preRender": false,

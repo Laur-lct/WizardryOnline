@@ -39,6 +39,7 @@ tpf.Game = ig.Game.extend({
 		this.backgroundMaps = [];
 
 		this.lightMap = null;
+		this.floorMap = null;
 		this.backImage = null;
     },
 
@@ -66,11 +67,11 @@ tpf.Game = ig.Game.extend({
 		
 		
 		// Erase all faces from the wall map that are not connected to a floor
-		var floorMap = this.getMapByName('floor');
+        this.floorMap = this.getMapByName('floor');
 		var wallMap = this.getMapByName('walls');
 		
-		if( floorMap && wallMap ) {
-			wallMap.eraseDisconnectedWalls( floorMap );
+		if( this.floorMap && wallMap ) {
+			wallMap.eraseDisconnectedWalls( this.floorMap );
 		}
 
 
@@ -83,7 +84,7 @@ tpf.Game = ig.Game.extend({
 
         // Create the culled sector map, using the floor map as a guide to where the player
 		// can travel. Add the geometry from all background maps
-		this.culledSectors = new tpf.CulledSectors( floorMap, this.backgroundMaps, this.sectorSize );
+		this.culledSectors = new tpf.CulledSectors( this.floorMap, this.backgroundMaps, this.sectorSize );
 		
 		
 		for( var i = 0; i < data.entities.length; i++ ) {

@@ -12,7 +12,7 @@ ig.module(
         var _2pi =Math.PI*2;
         EntityPlayer = ig.Entity.extend({
             type: ig.Entity.TYPE.A,
-            collides: ig.Entity.COLLIDES.PASSIVE,
+            collides: ig.Entity.COLLIDES.ACTIVE,
 
             size: {x: 32, y: 32},
             halfSize: 16,
@@ -88,6 +88,12 @@ ig.module(
                 if (this.emittedLight && ig.game.lightMap){
                     ig.game.lightMap.setLightSource(this.camPosCur.x+ this.halfSize,this.camPosCur.y+ this.halfSize,this.emittedLight);
                 }
+                var msg= ig.messages[ig.messages.length-1];
+                if (!msg.dbg) {
+                    msg = {dbg: ""};
+                    ig.messages.push(msg);
+                }
+                msg.dbg = "x="+this.camPosCur.x+', y='+this.camPosCur.y;
 
                 this.camPosHead.x = this.pos.x;
                 this.camPosHead.y = this.pos.y;

@@ -13,11 +13,7 @@ ig.module(
         'game.levels.base1',
 
         'game.title',
-        'game.ui.hud',
-
-		'game.entities.pointer'
-
-
+        'game.ui.hud'
          //,'plugins.twopointfive.debug'
     )
     .defines(function(){ "use strict";

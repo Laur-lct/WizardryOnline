@@ -56,7 +56,7 @@ tpf.LightMap = ig.Map.extend({
 			(x >= 0 && x < this.width) &&
 			(y >= 0 && y < this.height)
 		) {
-			return this.data[y][x];
+			return this.dataDyn[y][x];
 		} 
 		else {
 			return this.white;
@@ -64,14 +64,16 @@ tpf.LightMap = ig.Map.extend({
 	},
 
     lightDissipation: 3.3,
-    setLightSource: function( x, y, color) {
-        var lightIntensitySpan = /*Math.max(color.r,color.g,color.b)**/this.lightDissipation*this.tilesize;
+    setLightSource: function( x, y, color, dissipation) {
+	    if (!dissipation)
+	        dissipation =this.lightDissipation;
+        var lightIntensitySpan = /*Math.max(color.r,color.g,color.b)**/dissipation*this.tilesize;
 
         var xMin = Math.max(x - lightIntensitySpan,0);
         var yMin = Math.max(y - lightIntensitySpan,0);
 
-        var xMax = Math.min(x + lightIntensitySpan, this.pxWidth);
-        var yMax = Math.min(y + lightIntensitySpan, this.pxHeight);
+        var xMax = Math.min(x + lightIntensitySpan, this.pxWidth)+1;
+        var yMax = Math.min(y + lightIntensitySpan, this.pxHeight)+1;
 
         for (var dy=yMin; dy < yMax; dy+=this.tilesize){
             for (var dx=xMin; dx < xMax; dx+=this.tilesize){

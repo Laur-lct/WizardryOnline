@@ -30,7 +30,8 @@ tpf.Font = ig.Font.extend({
 		
 		var q = this._quads[c];
 		q.setAlpha(this._glAlpha);
-		q.setColor(this.color);
+        if (this.color.r !=q.color.r || this.color.g != q.color.g || this.color.b ==q.color.b )
+            q.setColor(this.color);
 		q.setPosition(targetX + charWidth/2, targetY + charHeight/2, 0);
 		ig.system.renderer.pushQuad(q);
 		

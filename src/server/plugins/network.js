@@ -39,7 +39,10 @@ ig.module(
 
                             //todo create normal game state
                             data.ents = [];
-                            data.ents.push(JSON.stringify(pl));
+                            for (var i=0; i < ig.game.entities.length; i++){
+                                var e =ig.game.entities[i];
+                                data.ents.push(JSON.stringify(e));
+                            }
                             socket.emit('game.join', data);
 
 
@@ -225,6 +228,12 @@ ig.module(
             this.killed(this);
         }
     });
+
+    ig.Entity.CREATE_ON = {
+        NONE:0,
+        CLIENT: 1,
+        SERVER: 2
+    };
 
     // No need to loads images, etc.
     ig.Loader.inject({

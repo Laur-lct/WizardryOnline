@@ -171,6 +171,12 @@ ig.module(
 
     });
 
+    ig.Entity.CREATE_ON = {
+        NONE:0,
+        CLIENT: 1,
+        SERVER: 2
+    };
+
     ig.System.inject({
         setClient: function(clientClass) {
             // Wait until a game has been established before

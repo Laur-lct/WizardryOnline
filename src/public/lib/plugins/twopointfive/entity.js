@@ -97,11 +97,11 @@ tpf.Entity = ig.Entity.extend({
 		if( this.dynamicLight && lm ) {
 			var ntx = Math.floor( (this.pos.x+this.size.x/2) / lm.tilesize),
 				nty = Math.floor( (this.pos.y+this.size.y/2) / lm.tilesize);
-
-			if( ntx !== this.__tilePosX || nty !== this.__tilePosY ) {
+			var lightChanged = lm.getLight(ntx, nty).isDirty;
+			if( ntx !== this.__tilePosX || nty !== this.__tilePosY || lightChanged ) {
 				this.__tilePosX = ntx;
 				this.__tilePosY = nty;
-				this.setLight( lm.getLight(ntx, nty) );
+                this.setLight(ig.game.floorMap.tileData[nty][ntx].quad.color);
 			}
 		}
 		

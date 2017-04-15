@@ -21,9 +21,7 @@ ig.module(
                     width = image.width;
                     height = image.height;
                 }
-
                 this.parent(image, tile, width, height);
-
                 this.setPosition(x,y);
                 if (color)
                     this.setColor(color);
@@ -140,6 +138,7 @@ ig.module(
             maxLines: 5,
             defaultColor: {r:0.7,g:0.7,b:0.7},
             sysColor: {r:0,g:8,b:0},
+            debugColor: {r:0.4,g:.4,b:0.4},
             init: function (x,y, width, height, font) {
                 this.parent(x,y,null, width, height, {r:0,g:0,b:0});
                 this.font = font;
@@ -158,13 +157,17 @@ ig.module(
                         this.font.color =this.sysColor;
                         this.font.draw(msg.sys, this.x+this.tileWidth/2, this.y+5 + this.font.height*i, ig.Font.ALIGN.CENTER);
                     }
+                    else if (msg.dbg){
+                        this.font.color =this.debugColor;
+                        this.font.draw(msg.dbg, this.x+5, this.y+5 + this.font.height*i, ig.Font.ALIGN.LEFT);
+                    }
                     else
                         this.font.draw(msg, this.x+5, this.y+5 + this.font.height*i, ig.Font.ALIGN.LEFT);
                 }
                 this.font.color = this.defaultColor;
             },
             _addMessages:function () {
-                //todo: multiline, colors
+                //todo: multiline
                 if (this.messages.length > 100)
                     this.messages.splice(0, this.messages.length-100);
                 this.scroll = Math.max(0,this.messages.length - this.maxLines);

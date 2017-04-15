@@ -12,7 +12,7 @@ ig.module(
         var _2pi =Math.PI*2;
         EntityPlayer = ig.Entity.extend({
             type: ig.Entity.TYPE.A,
-            collides: ig.Entity.COLLIDES.PASSIVE,
+            collides: ig.Entity.COLLIDES.ACTIVE,
 
             size: {x: 32, y: 32},
 
