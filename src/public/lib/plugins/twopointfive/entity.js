@@ -101,7 +101,15 @@ tpf.Entity = ig.Entity.extend({
 			if( ntx !== this.__tilePosX || nty !== this.__tilePosY || lightChanged ) {
 				this.__tilePosX = ntx;
 				this.__tilePosY = nty;
-                this.setLight(ig.game.floorMap.tileData[nty][ntx].quad.color);
+				var c = ig.game.floorMap.tileData[nty][ntx].quad.color;
+				if (this.emittedLight){
+                    c = {
+                    	r: Math.max(c.r,this.emittedLight.r),
+						g: Math.max(c.g,this.emittedLight.g),
+						b: Math.max(c.b,this.emittedLight.b)
+                    };
+				}
+                this.setLight(c);
 			}
 		}
 		
@@ -162,8 +170,11 @@ tpf.Entity = ig.Entity.extend({
 	},
 	
 	setLight: function( color ) {
-		if( !this.tile ) { return; }
-		this.tile.quad.setColor(color);
+		if( !this.tile )
+			return;
+        var q = this.tile.quad;
+        if (color.r !=q.color.r || color.g != q.color.g || color.b !=q.color.b)
+            this.tile.quad.setColor(color);
 	},
 
 	draw: function() {

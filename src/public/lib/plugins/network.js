@@ -98,11 +98,11 @@ ig.module(
                 var ad = input.a - pl.camPosCur.a;
                 while (ad > Math.PI){
                     ad-=Math.PI*2;
-                    ig.messages.push({sys:"Bug: angle1"})
+                    //ig.messages.push({sys:"Bug: angle1"})
                 }
                 while (ad < -Math.PI) {
                     ad += Math.PI * 2;
-                    ig.messages.push({sys: "Bug: angle1"})
+                    //ig.messages.push({sys: "Bug: angle1"})
                 }
                 for(var i = 0; i < pl.camPos.length; i++){
                     var idxHead = (pl.camPosIdx+i)%pl.camPos.length;

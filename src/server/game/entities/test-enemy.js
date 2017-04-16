@@ -14,7 +14,7 @@ ig.module(
             checkAgainst: ig.Entity.TYPE.A,
             collides: ig.Entity.COLLIDES.FIXED,
 
-            size: {x: 1, y: 1},
+            size: {x: 64, y: 64},
             friction:{x:50, y:50},
             scale: 0.3,
             health: 10,

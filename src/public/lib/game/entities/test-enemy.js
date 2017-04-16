@@ -15,7 +15,7 @@ ig.module(
             checkAgainst: ig.Entity.TYPE.A,
             collides: ig.Entity.COLLIDES.FIXED,
 
-            size: {x: 1, y: 1},
+            size: {x: 64, y: 64},
             friction:{x:50, y:50},
             scale: 0.3,
             health: 10,
@@ -40,7 +40,7 @@ ig.module(
 
                 this.addAnim( 'idle', 1, [0] );
                 this.hurtTimer = new ig.Timer();
-                this.halfSize = this.size.x*this.scale/2;
+                this.halfSize = this.size.x/2;
             },
 
 
