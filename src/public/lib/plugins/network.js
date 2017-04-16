@@ -96,10 +96,14 @@ ig.module(
                 var xd = input.x - pl.camPosCur.x;
                 var yd = input.y - pl.camPosCur.y;
                 var ad = input.a - pl.camPosCur.a;
-                while (ad > Math.PI)
+                while (ad > Math.PI){
                     ad-=Math.PI*2;
-                while (this.angle < -Math.PI)
-                    ad+=Math.PI*2;
+                    ig.messages.push({sys:"Bug: angle1"})
+                }
+                while (ad < -Math.PI) {
+                    ad += Math.PI * 2;
+                    ig.messages.push({sys: "Bug: angle1"})
+                }
                 for(var i = 0; i < pl.camPos.length; i++){
                     var idxHead = (pl.camPosIdx+i)%pl.camPos.length;
                     var cp = pl.camPos[idxHead];
