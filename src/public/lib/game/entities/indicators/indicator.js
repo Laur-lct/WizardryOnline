@@ -5,20 +5,19 @@ ig.module(
     'game.entities.indicators.indicator'
 )
     .requires(
-        'plugins.twopointfive.entity',
+        'game.entities.particle',
         'impact.entity-pool'
     )
     .defines(function(){
         EntityIndicator = EntityParticle.extend({
-            vpos: 0,
             scale: 0.5,
-            initialVel: {x:0, y: 0, z: 2.5},
+            initialVel: {x:0, y: 0, z: 15},
             friction: {x: 10, y: 10, z:0.1},
 
             lifetime: 2,
 
-            init: function( x, y, settings ) {
-                this.parent( x, y, settings );
+            init: function( x, y, parent,text ) {
+                this.parent( x, y);
             },
 
             setPosition: function() {
